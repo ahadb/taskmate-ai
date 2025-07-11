@@ -12,7 +12,7 @@ import type {
 } from "../types/types";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import api from "../api";
-import { useToast } from "../hooks/useToast";
+import { useNotifications } from "../contexts/NotificationContext";
 
 export default function TaskManager() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -38,7 +38,7 @@ export default function TaskManager() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { toasts, showSuccess, showError, removeToast } = useToast();
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     fetchTasks();
@@ -89,7 +89,11 @@ export default function TaskManager() {
       setTasks(response.data);
       setError(null);
     } catch (err) {
-      showError("Failed to load tasks", "Please try refreshing the page.");
+      addNotification({
+        type: "error",
+        title: "Failed to load tasks",
+        message: "Please try refreshing the page.",
+      });
       console.error("Error fetching tasks:", err);
     } finally {
       setIsLoading(false);
@@ -105,12 +109,17 @@ export default function TaskManager() {
     try {
       const response = await api.post("/tasks", taskData);
       setTasks([...tasks, response.data]);
-      showSuccess(
-        "Task created successfully",
-        `"${taskData.title}" has been added to your tasks.`
-      );
+      addNotification({
+        type: "success",
+        title: "Task created successfully",
+        message: `"${taskData.title}" has been added to your tasks.`,
+      });
     } catch (err) {
-      showError("Failed to create task", "Please try again.");
+      addNotification({
+        type: "error",
+        title: "Failed to create task",
+        message: "Please try again.",
+      });
       console.error("Error creating task:", err);
       throw err;
     }
@@ -130,9 +139,17 @@ export default function TaskManager() {
       const action = task.completed
         ? "marked as incomplete"
         : "marked as complete";
-      showSuccess("Task updated", `"${task.title}" has been ${action}.`);
+      addNotification({
+        type: "success",
+        title: "Task updated",
+        message: `"${task.title}" has been ${action}.`,
+      });
     } catch (err) {
-      showError("Failed to update task", "Please try again.");
+      addNotification({
+        type: "error",
+        title: "Failed to update task",
+        message: "Please try again.",
+      });
       console.error("Error updating task:", err);
     }
   };
@@ -144,12 +161,17 @@ export default function TaskManager() {
 
       await api.delete(`/tasks/${id}`);
       setTasks(tasks.filter((t) => t.id !== id));
-      showSuccess(
-        "Task deleted",
-        `"${task.title}" has been removed from your tasks.`
-      );
+      addNotification({
+        type: "success",
+        title: "Task deleted",
+        message: `"${task.title}" has been removed from your tasks.`,
+      });
     } catch (err) {
-      showError("Failed to delete task", "Please try again.");
+      addNotification({
+        type: "error",
+        title: "Failed to delete task",
+        message: "Please try again.",
+      });
       console.error("Error deleting task:", err);
     }
   };
@@ -261,8 +283,6 @@ export default function TaskManager() {
         task={editingTask}
         onSave={handleUpdateTask}
       />
-
-      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }

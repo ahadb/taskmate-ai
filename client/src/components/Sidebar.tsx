@@ -41,9 +41,14 @@ export default function Sidebar() {
             />
           </svg>
         </div>
-        <h1 className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-xl font-semibold leading-6 text-transparent">
-          TaskMate AI
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold leading-6 text-gray-900">
+            TaskMate AI
+          </h1>
+          <span className="inline-flex items-center rounded-md bg-gradient-to-r from-indigo-500 to-purple-600 px-2 py-1 text-xs font-medium text-white border border-indigo-400">
+            DEMO
+          </span>
+        </div>
       </div>
       <div className="border-t border-gray-300 mb-4 shadow-sm"></div>
       <div className="px-6 pb-4">

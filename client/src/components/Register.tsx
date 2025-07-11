@@ -44,7 +44,30 @@ export default function Register() {
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-semibold leading-7 text-gray-900">
+        <div className="flex items-center justify-center gap-2">
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 22 22"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 text-indigo-600"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold leading-10 text-gray-900">
+              TaskMate AI
+            </h1>
+          </div>
+        </div>
+        <h2 className="mt-6 text-center text-2xl font-semibold leading-7 text-gray-900">
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm leading-5 text-gray-600">

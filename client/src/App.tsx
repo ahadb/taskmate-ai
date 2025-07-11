@@ -11,6 +11,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Layout from "./components/Layout";
 import { useAuthStore } from "./store/authStore";
+import { NotificationProvider } from "./contexts/NotificationContext";
 import type { Task } from "./types/types";
 import api from "./api";
 
@@ -71,56 +72,58 @@ export default function App() {
 
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/tasks"
-            element={
-              <ProtectedRoute>
-                <TaskManager />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard
-                  tasks={tasks}
-                  onCreateTask={handleCreateTask}
-                  onViewOverdue={handleViewOverdue}
+      <NotificationProvider>
+        <Layout>
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute>
+                  <TaskManager />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard
+                    tasks={tasks}
+                    onCreateTask={handleCreateTask}
+                    onViewOverdue={handleViewOverdue}
+                  />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <div className="text-center py-12">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                      Settings
+                    </h1>
+                    <p className="text-gray-600">
+                      Settings content coming soon...
+                    </p>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  to={isAuthenticated ? "/dashboard" : "/login"}
+                  replace
                 />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <div className="text-center py-12">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                    Settings
-                  </h1>
-                  <p className="text-gray-600">
-                    Settings content coming soon...
-                  </p>
-                </div>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to={isAuthenticated ? "/dashboard" : "/login"}
-                replace
-              />
-            }
-          />
-        </Routes>
-      </Layout>
+              }
+            />
+          </Routes>
+        </Layout>
+      </NotificationProvider>
     </Router>
   );
 }

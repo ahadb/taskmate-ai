@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   SparklesIcon,
   HandRaisedIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import { aiApi } from "../api/index";
+import confetti from "canvas-confetti";
 
 interface TaskFormProps {
   onCreateTask: (taskData: {
@@ -43,6 +44,16 @@ export default function TaskForm({
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
 
+  // Confetti function
+  const triggerConfetti = useCallback(() => {
+    confetti({
+      particleCount: 30,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"],
+    });
+  }, []);
+
   const handleManualSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim() && !isSubmitting) {
@@ -74,6 +85,8 @@ export default function TaskForm({
       setIsGenerating(true);
       try {
         setAiError(null);
+        // Trigger confetti when AI generation starts
+        triggerConfetti();
         // Use real AI service to parse and create task
         const aiTask = await aiApi.createTask(aiInput.trim());
         await onCreateTask(aiTask);
@@ -112,25 +125,9 @@ export default function TaskForm({
   return (
     <div className="bg-gray-100 shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6 border border-gray-300">
       <div className="flex items-center justify-between mb-6">
-        {!editMode && (
-          <button
-            type="button"
-            onClick={() => setMode(mode === "manual" ? "ai" : "manual")}
-            className="mr-3 p-2 rounded-md bg-gray-100 hover:bg-gray-200 text-orange-600 flex items-center"
-            title={
-              mode === "manual" ? "Switch to AI Assistant" : "Switch to Manual"
-            }
-          >
-            {mode === "manual" ? (
-              <HandRaisedIcon className="h-5 w-5" />
-            ) : (
-              <SparklesIcon className="h-5 w-5" />
-            )}
-          </button>
-        )}
         <div className="flex-1">
           <h2 className="text-lg font-medium text-gray-900">
-            {editMode ? "Edit Task" : "Quick Add Tasks (AI Powered)"}
+            {editMode ? "Edit Task" : "Quick Add Tasks"}
           </h2>
           <p className="mt-1 text-sm text-gray-600">
             {editMode
@@ -138,10 +135,35 @@ export default function TaskForm({
               : "Create a new task to get started."}
           </p>
         </div>
-        {!editMode && mode === "ai" && (
-          <div className="flex items-center gap-1 text-xs text-orange-600 font-medium">
-            <SparklesIcon className="h-3 w-3" />
-            AI Powered
+
+        {!editMode && (
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <button
+                type="button"
+                onClick={() => setMode("manual")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  mode === "manual"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <HandRaisedIcon className="h-4 w-4" />
+                <span>Manual</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("ai")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  mode === "ai"
+                    ? "bg-white text-orange-600 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <SparklesIcon className="h-4 w-4" />
+                <span>AI Powered</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -149,6 +171,65 @@ export default function TaskForm({
       {/* Manual Task Form */}
       {mode === "manual" && (
         <form onSubmit={handleManualSubmit} className="space-y-3">
+          {/* Task Suggestions */}
+          <div className="mb-4">
+            <label className="block text-xs font-medium text-gray-700 mb-2">
+              Quick Templates
+            </label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setTitle("Review emails");
+                  setPriority("medium");
+                }}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Review emails
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTitle("Team meeting");
+                  setPriority("high");
+                }}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Team meeting
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTitle("Buy groceries");
+                  setPriority("low");
+                }}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Buy groceries
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTitle("Call dentist");
+                  setPriority("medium");
+                }}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Call dentist
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTitle("Review quarterly report");
+                  setPriority("high");
+                }}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Review quarterly report
+              </button>
+            </div>
+          </div>
+
           <div className="grid max-w-4xl grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-12">
             <div className="sm:col-span-4">
               <label
@@ -256,22 +337,60 @@ export default function TaskForm({
           </div>
 
           {/* AI Suggestions */}
-          <div className="rounded-md bg-orange-50 p-3 border border-orange-100">
-            <div className="flex items-start">
+          <div className="rounded-md bg-blue-50 p-3 border border-blue-100">
+            <div className="flex items-start mb-3">
               <SparklesIcon
-                className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0"
+                className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0"
                 aria-hidden="true"
               />
               <div className="ml-2">
-                <h3 className="text-xs font-medium text-orange-800">
-                  Try phrases like:
+                <h3 className="text-xs font-medium text-blue-800">
+                  Quick AI Suggestions:
                 </h3>
-                <ul className="mt-1 text-xs text-orange-700 space-y-0.5">
-                  <li>• "Call dentist tomorrow at 3pm"</li>
-                  <li>• "Review quarterly report by Friday"</li>
-                  <li>• "Buy groceries: milk, bread, eggs"</li>
-                </ul>
               </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setAiInput("Call dentist tomorrow at 3pm")}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Call dentist tomorrow at 3pm
+              </button>
+              <button
+                type="button"
+                onClick={() => setAiInput("Review quarterly report by Friday")}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Review quarterly report by Friday
+              </button>
+              <button
+                type="button"
+                onClick={() => setAiInput("Buy groceries: milk, bread, eggs")}
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Buy groceries: milk, bread, eggs
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setAiInput("Schedule team meeting for next Monday at 10am")
+                }
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Schedule team meeting for next Monday at 10am
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setAiInput(
+                    "Send follow-up email to client about project timeline"
+                  )
+                }
+                className="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Send follow-up email to client about project timeline
+              </button>
             </div>
           </div>
 

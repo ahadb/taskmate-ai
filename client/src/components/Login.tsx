@@ -50,7 +50,7 @@ export default function Login() {
             </svg>
           </div>
           <div>
-            <h1 className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-4xl font-bold leading-10 text-transparent">
+            <h1 className="text-4xl font-bold leading-10 text-gray-900">
               TaskMate AI
             </h1>
           </div>
